@@ -1,0 +1,73 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from gurobipy import GRB
+
+
+class EdgeCostFunction:
+    
+    def __init__(self, c_init: float, c_min: float, b_init: float, b_min: float):
+        self.c_init = c_init
+        self.c_min = c_min
+        self.b_init = b_init
+        self.b_min = b_min
+        # If this doesn't work, change this back to a hardcoded value (originally 100)
+        # self.infeasible_cost = GRB.INFINITY
+        self.infeasible_cost = 100
+        self.equation = ""
+
+    # Leave up to subclasses to implement.
+    def f_int(self, b):
+        raise NotImplementedError
+
+    def f(self, b) -> float:
+        # Output depending on type
+        if isinstance(b, np.ndarray):
+            return np.array(list(map(self.f_int, b)))
+        else:
+            return self.f_int(b)
+            
+class EdgeCostLinear(EdgeCostFunction):
+
+    def __init__(self, c_init: float, c_min: float, b_init: float, b_min: float) -> None:
+
+        # Calculate slope and y-offset with current parameters.
+        self.slope =  (c_min - c_init)/(b_min - b_init)
+        self.offset =  c_init - self.slope * b_init
+        self.equation = (r"c = \frac{(c_\text{min}-c_\text{init})"
+                r"(b - b_\text{init})}"
+                r"{b_\text{min}-b_\text{init}}+c_\text{init}")
+
+        # Call superclass constructor
+        super(EdgeCostLinear, self).__init__(c_init, c_min, b_init, b_min)
+
+    def f_int(self, b):
+        if b < self.b_init:
+            return self.infeasible_cost
+        
+        # Clamp budget to minimum
+        if b >= self.b_min:
+            return self.c_min
+            
+        return self.slope*b + self.offset
+
+class EdgeCostExponential(EdgeCostFunction):
+
+    def __init__(self, c_init: float, c_min: float, b_init: float, b_min: float, alpha: float) -> None:
+
+        self.alpha = alpha
+        self.equation = (r"c = c_{\text{init}} *"
+                         r"e^{-\alpha(b-b_{\text{init}})} "
+                         r"+ c_{\text{min}}")
+
+        # Call superclass constructor
+        super(EdgeCostExponential, self).__init__(c_init, c_min, b_init, b_min)
+
+    def printEquation():
+        
+                
+    def f_int(self, b):
+        if b < self.b_init:
+            return self.infeasible_cost
+        
+        return self.c_init * np.exp(-self.alpha * (b - self.b_init)) + self.c_min
+
