@@ -43,6 +43,7 @@ class EdgeCostLinear(EdgeCostFunction):
         super(EdgeCostLinear, self).__init__(c_init, c_min, b_init, b_min)
 
     @property
+    # TODO: Make these piecewise to show full range of function
     def equation(self):
         return (r"$c = \frac{(c_{min}-c_{init})"
                 r"(b - b_{init})}"

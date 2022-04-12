@@ -1,5 +1,5 @@
 import networkx as nx
-from costgraph.EdgeFunctions import EdgeCostFunction
+from costgraph.Functions import EdgeCostFunction
 
 class CostFuncGraph(nx.DiGraph):
 

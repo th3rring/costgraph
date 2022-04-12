@@ -13,7 +13,7 @@ class PathEdge():
     c: float
 
     def __repr__(self):
-         return f'{self.u} -> {self.v}: b={self.b} c={self.c}'
+        return f'{self.u} -> {self.v}: b={self.b:.5f} c={self.c:.5f}'
 
 
 class Model():
@@ -78,16 +78,34 @@ class Model():
         for i in self._graph.nodes:
             self._gp_model.addConstr(gp.quicksum(self._x[u,v] for u,v in self._arcs.select(i, "*")) <= 1)
 
-    def solve(self):
+    def solve(self, print_path=False):
         self._gp_model.optimize()
 
         if self._gp_model.status == GRB.Status.OPTIMAL:
+
             shortest_path = []
+            total_cost = 0
+            total_budget = 0
+
             for i,j in self._arcs:
                 if self._x[i,j].x > 0:
+
                     b_cur = self._b[i,j].x
-                    shortest_path.append(PathEdge(i, j, b_cur, self._costs.select(i,j)[0].f(b_cur)))
-            logging.info("")
+                    total_budget += b_cur
+
+                    c_cur = self._costs.select(i,j)[0].f(b_cur)
+                    total_cost += c_cur
+
+                    shortest_path.append(PathEdge(i, j, b_cur, c_cur))
+
+            logging.info("Shortest path found!")
+
+            if print_path:
+                for e in shortest_path:
+                    print(e)
+                print(f"Total budget used: {total_budget}")
+                print(f"Total cost for path: {total_cost:.5f}")
+
             return shortest_path
 
         else:
