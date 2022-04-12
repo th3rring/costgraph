@@ -2,3 +2,5 @@
 .ipynb_checkpoints/*
 .virtual_documents/*
 costgraph/__pycache__/*
+
+costgraph/.ipynb_checkpoints/*
