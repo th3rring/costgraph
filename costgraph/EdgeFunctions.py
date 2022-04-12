@@ -21,15 +21,15 @@ class EdgeCostFunction(ABC):
         """ Return the characteristic equation of the edge function"""
 
     @abstractmethod
-    def f_int(self, b):
+    def _f_int(self, b):
         raise NotImplementedError
 
     def f(self, b) -> float:
         # Output depending on type
         if isinstance(b, np.ndarray):
-            return np.array(list(map(self.f_int, b)))
+            return np.array(list(map(self._f_int, b)))
         else:
-            return self.f_int(b)
+            return self._f_int(b)
             
 class EdgeCostLinear(EdgeCostFunction):
 
@@ -49,7 +49,7 @@ class EdgeCostLinear(EdgeCostFunction):
                 r"{b_{min}-b_{init}}+c_{init}$")
 
 
-    def f_int(self, b):
+    def _f_int(self, b):
         if b < self.b_init:
             return self.infeasible_cost
         
@@ -70,13 +70,13 @@ class EdgeCostExponential(EdgeCostFunction):
                 
     @property
     def equation(self):
-        return  (r"$c = c_{{init}} *"
+        return  (r"$c = (c_{init}-c_{min}) *"
                          r"e^{-\alpha(b-b_{{init}})} "
                          r"+ c_{{min}}$")
 
-    def f_int(self, b):
+    def _f_int(self, b):
         if b < self.b_init:
             return self.infeasible_cost
         
-        return self.c_init * np.exp(-self.alpha * (b - self.b_init)) + self.c_min
+        return (self.c_init - self.c_min) * np.exp(-self.alpha * (b - self.b_init)) + self.c_min
 
