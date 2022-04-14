@@ -1,0 +1,16 @@
+strict digraph  {
+a;
+b;
+c;
+a -> b  [b="8.412040133779264", c="2.907405637840421", f=<costgraph.Functions.EdgeCostLinear object at 0x7f0af8b383a0>, label=<<TABLE 
+            BORDER="0"
+            >
+            <TR><TD><IMG SRC="/home/therring/Workspace/costgraph/imgs/edgecosts/a-b"/></TD></TR>
+            </TABLE>>];
+a -> c  [f=<costgraph.Functions.EdgeCostExponential object at 0x7f0af42b5550>];
+b -> c  [b="8.387959866220736", c="2.921165790731008", f=<costgraph.Functions.EdgeCostLinear object at 0x7f0af8b383a0>, label=<<TABLE 
+            BORDER="0"
+            >
+            <TR><TD><IMG SRC="/home/therring/Workspace/costgraph/imgs/edgecosts/b-c"/></TD></TR>
+            </TABLE>>];
+}
