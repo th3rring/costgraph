@@ -4,3 +4,6 @@
 costgraph/__pycache__/*
 
 costgraph/.ipynb_checkpoints/*
+
+imgs/edgecosts/*
+imgs/.ipynb_checkpoints/*
