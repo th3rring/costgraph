@@ -3,6 +3,7 @@ import numpy as np
 import gurobipy as gp
 from gurobipy import GRB
 from dataclasses import dataclass
+from typing import List
 
 @dataclass
 class PathEdge():
@@ -15,6 +16,7 @@ class PathEdge():
     def __repr__(self):
         return f'{self.u} -> {self.v}: b={self.b:.5f} c={self.c:.5f}'
 
+ShortestPath = List[PathEdge]
 
 class Model():
 
